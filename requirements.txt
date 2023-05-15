@@ -1,0 +1,7 @@
+pandas==1.5.0
+djitellopy==2.4.0
+scipy==1.8.1
+PyAudio==0.2.13
+PyAutoGUI==0.9.53
+opencv-python==4.6.0.66
+pynput==1.7.6
