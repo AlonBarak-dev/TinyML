@@ -15,26 +15,29 @@ class MinimalSubscriber:
         self.me = tello.Tello()
         self.me.connect()
 
-        self.recorder = Recorder(record_path)
+        # recorder & logger
+        self.log = Logger(log_path, self.me)
+        self.recorder = Recorder(record_path, self.log)
         self.record_started = False
+
+        self.img = None
+        self.cap: cv2.VideoCapture = self.me.get_video_capture()
+        self.q = queue.Queue()
+
+        # prints the Battery percentage
+        print("Battery percentage:", self.me.get_battery())
+
+        self.stream_thread = Thread(target=self.stream)
+        self.log_thread = Thread(target=self.log.update)
         self.record_thread = Thread(target=self.recorder.record)
 
-        self.log = Logger(log_path, self.me)
-        self.log_thread = Thread(target=self.log.update)
+        self.stream_thread.start()
 
         # start the keyboard listener
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)
         self.tookoff = False
         self.listener.start()
 
-        self.img = None
-        self.cap: cv2.VideoCapture = self.me.get_video_capture()
-        self.cap
-        self.q = queue.Queue()
-
-        # prints the Battery percentage
-        print("Battery percentage:", self.me.get_battery())
-        
         # if the battery is too low its arise an error
         if self.me.get_battery() < 10:
             raise RuntimeError("Tello rejected attemp to takeoff due to low Battery")
@@ -62,55 +65,44 @@ class MinimalSubscriber:
         medium_factor = 50
         
         a, b, c, d = 0, 0, 0, 0
+
         try:
-            self.log.command = "STAND"
             # Takeoff
             if key == Key.space and not self.tookoff:
                 self.tookoff = True
                 self.me.takeoff()
-                self.log.command = "TAKEOFF"
             # Land
             elif key == Key.space and self.tookoff:
                 self.tookoff = False
                 self.me.land()
-                self.log.command = "LAND"
             # Up / Down
             elif key == Key.up:
                 c = 0.5 * medium_factor
-                self.recorder.state = 'UP'
-                self.log.command = "UP"
+                
             elif key == Key.down:
                 c = -0.5 * medium_factor
-                self.recorder.state = 'DOWN'
-                self.log.command = "DOWN"
+                
             # YAW
             elif key == Key.left:
                 d = -0.5 * big_factor
-                self.recorder.state = 'YAW LEFT'
-                self.log.command = "YAW LEFT"
+                
             elif key == Key.right:
                 d = 0.5 * big_factor
-                self.recorder.state = 'YAW RIGHT'
-                self.log.command = "YAW RIGHT"
             
             # Forward / Backward
             elif key == KeyCode.from_char('w'):
                 b = 0.5 * big_factor
-                self.recorder.state = 'FORWARD'
-                self.log.command = "FORWARD"
+                
             elif key == KeyCode.from_char('s'):
                 b = -0.5 * big_factor
-                self.recorder.state = 'BACKWARD'
-                self.log.command = "BACKWARD"
+                
             # Left / Right
             elif key == KeyCode.from_char('a'):
                 a = -0.5 * big_factor
-                self.recorder.state = 'LEFT'
-                self.log.command = "LEFT"
+                
             elif key == KeyCode.from_char('d'):
                 a = 0.5 * big_factor
-                self.recorder.state = 'RIGHT'
-                self.log.command = "RIGHT"
+                
             # Battery
             elif key == KeyCode.from_char('b'):
                 print("Battery percentage:", self.me.get_battery())
@@ -135,6 +127,23 @@ class MinimalSubscriber:
             elif key == KeyCode.from_char('m'):
                 self.log.save_log()
 
+            elif key.char == '0':
+            # Normal state
+                self.log.command = "0"
+                print("0")      
+            elif key.char == '1':
+                # HIT
+                self.log.command = "1"
+                print("1")
+            elif key.char == '2':
+                # Next to a wall/object
+                self.log.command = "2"
+                print("2")
+            elif key.char == '3':
+                # TBD
+                self.log.command = "3"
+                print("3")
+            
             # send the commands to the drone
             self.me.send_rc_control(int(a), int(b), int(c), int(d))
 
@@ -145,6 +154,7 @@ class MinimalSubscriber:
     def on_release(self,key):
         self.recorder.state = None 
         self.me.send_rc_control(0, 0, 0, 0)
+        
 
 
     def video(self):

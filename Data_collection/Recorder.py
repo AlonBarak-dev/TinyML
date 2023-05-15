@@ -14,7 +14,6 @@ class Recorder():
         self.state = None
         self.record_start_time = None
         self. writedown_start_time = None
-        self.writedown_thread = Thread(target=self.writedown)
         self.file_path = file_path
         self.log = log
 
@@ -33,7 +32,6 @@ class Recorder():
 
         frames = []  # Initialize array to store frames
         print('Started recording...')
-        self.writedown_thread.start()
         # Store data in chunks for 3 seconds
         self.record_start_time = time.time()
         for i in range(0, int((self.fs / self.chunk) * self.seconds)):
@@ -58,15 +56,4 @@ class Recorder():
         wf.writeframes(b''.join(frames))
         wf.close()
         
-
-    def writedown(self):
-        self.writedown_start_time = time.time()
-        with open('test/test_labels/label_1.csv', 'w') as f:
-            while time.time()-self.writedown_start_time <= 302:
-                if self.state is None:
-                    f.write(f'{time.time()-self.writedown_start_time}, STANDING\n')
-                else:
-                    f.write(f'{time.time()-self.writedown_start_time}, {self.state}\n')
-                time.sleep(0.1)
-        f.close()
     

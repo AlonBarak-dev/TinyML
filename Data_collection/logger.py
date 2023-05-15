@@ -10,9 +10,9 @@ class Logger:
         
         self.filename = filename
         self.tello = tello
-        self.df = pd.DataFrame(columns=['time', 'command', 'baro', 'pitch', 'roll', 'Yaw', 'height', 'Vx', 'Vy', 'Vz', 'battery'])
-        self.command = "STAND"
-        self.thread_update = Thread(target=self.update).start()
+        self.df = pd.DataFrame(columns=['time', 'label', 'baro', 'pitch', 'roll', 'Yaw', 'height', 'Vx', 'Vy', 'Vz', 'battery'])
+        self.command = "0"
+        # self.thread_update = Thread(target=self.update).start()
         self.roll = 0
         self.yaw = 0
         
@@ -34,31 +34,31 @@ class Logger:
         battery = data['bat']
         baro = data['baro']
 
-        if self.command == "STAND" and \
+        if self.command == "0" and \
             abs(self.yaw - yaw) > 20:
                 print("YAW HIT!!", abs(self.yaw - yaw))
-                self.command = "Hit"
+                self.command = "1"
 
-        elif self.command == "STAND" and \
+        elif self.command == "0" and \
             abs(self.yaw - yaw) > 10:
                 print("YAW Stabilization!!", abs(self.yaw - yaw))
-                self.command = "Stabilization"
+                self.command = "1"
         
-        elif self.command == "STAND" and \
+        elif self.command == "0" and \
             abs(self.roll - roll) > 5:
                 print("ROLL HIT!!", abs(self.roll - roll))
-                self.command = "Hit"
+                self.command = "1"
         
         self.roll = roll      
         self.yaw = yaw
 
         # create a row from the above values
-        row = [curr_time, self.command,baro, pitch, roll, yaw, height, vx, vy, vz, battery]
+        row = [curr_time, self.command, baro, pitch, roll, yaw, height, vx, vy, vz, battery]
 
         # save the currnet state in the log 
         self.df.loc[len(self.df)] = row
         # restart the command to: STAND
-        self.command = "STAND"
+        self.command = "0"
 
     
     def save_log(self):
