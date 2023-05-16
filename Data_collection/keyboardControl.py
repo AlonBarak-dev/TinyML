@@ -21,17 +21,17 @@ class MinimalSubscriber:
         self.record_started = False
 
         self.img = None
-        self.cap: cv2.VideoCapture = self.me.get_video_capture()
+        # self.cap: cv2.VideoCapture = self.me.get_video_capture()
         self.q = queue.Queue()
 
         # prints the Battery percentage
         print("Battery percentage:", self.me.get_battery())
 
-        self.stream_thread = Thread(target=self.stream)
+        # self.stream_thread = Thread(target=self.stream)   
         self.log_thread = Thread(target=self.log.update)
         self.record_thread = Thread(target=self.recorder.record)
 
-        self.stream_thread.start()
+        # self.stream_thread.start()
 
         # start the keyboard listener
         self.listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_release)

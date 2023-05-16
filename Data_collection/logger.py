@@ -58,7 +58,6 @@ class Logger:
         # save the currnet state in the log 
         self.df.loc[len(self.df)] = row
         # restart the command to: STAND
-        self.command = "0"
 
     
     def save_log(self):
