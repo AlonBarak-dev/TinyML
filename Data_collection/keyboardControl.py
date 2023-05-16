@@ -178,8 +178,9 @@ class MinimalSubscriber:
 
 
 def main():
-    rec_path = "example.wav"
-    log_path = "example.csv"
+    idx = 0
+    rec_path = "record_" + str(idx) + ".wav"
+    log_path = "label_" + str(idx) + ".csv"
     tello = MinimalSubscriber(rec_path, log_path)
     try:
         while True:
