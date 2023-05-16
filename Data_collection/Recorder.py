@@ -13,7 +13,7 @@ class Recorder():
         self.seconds = 10
         self.state = None
         self.record_start_time = None
-        self. writedown_start_time = None
+        self.writedown_start_time = None
         self.file_path = file_path
         self.log = log
 
