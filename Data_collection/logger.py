@@ -34,20 +34,20 @@ class Logger:
         battery = data['bat']
         baro = data['baro']
 
-        if self.command == "0" and \
-            abs(self.yaw - yaw) > 20:
-                print("YAW HIT!!", abs(self.yaw - yaw))
-                self.command = "1"
+        # if self.command == "0" and \
+        #     abs(self.yaw - yaw) > 20:
+        #         print("YAW HIT!!", abs(self.yaw - yaw))
+        #         self.command = "1"
 
-        elif self.command == "0" and \
-            abs(self.yaw - yaw) > 10:
-                print("YAW Stabilization!!", abs(self.yaw - yaw))
-                self.command = "1"
+        # elif self.command == "0" and \
+        #     abs(self.yaw - yaw) > 10:
+        #         print("YAW Stabilization!!", abs(self.yaw - yaw))
+        #         self.command = "1"
         
-        elif self.command == "0" and \
-            abs(self.roll - roll) > 5:
-                print("ROLL HIT!!", abs(self.roll - roll))
-                self.command = "1"
+        # elif self.command == "0" and \
+        #     abs(self.roll - roll) > 5:
+        #         print("ROLL HIT!!", abs(self.roll - roll))
+        #         self.command = "1"
         
         self.roll = roll      
         self.yaw = yaw
