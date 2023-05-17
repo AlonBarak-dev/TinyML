@@ -15,6 +15,7 @@ class Logger:
         # self.thread_update = Thread(target=self.update).start()
         self.roll = 0
         self.yaw = 0
+        self.start_time = None
         
 
 
@@ -22,8 +23,11 @@ class Logger:
         """
             Given a list of all parametrs, add them to the DF.
         """
+        if self.start_time is None:
+            self.start_time = time.time()
+
         # Extract the desired parameters from the state dict
-        curr_time = time.time()
+        curr_time = time.time() - self.start_time
         roll = data['roll']
         pitch = data['pitch']
         yaw = data['yaw']
@@ -72,7 +76,7 @@ class Logger:
             This thread update the log file every 0.5 seconds.
         """
         while True:
-            time.sleep(1)
+            time.sleep(0.5)
             state = self.tello.get_current_state()
             self.add(state)
     
