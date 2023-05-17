@@ -179,15 +179,14 @@ class MinimalSubscriber:
 
 def main():
     idx = 0
-    rec_path = "records/record_" + str(idx) + ".wav"
-    log_path = "Logs/label_" + str(idx) + ".csv"
+    rec_path = "Data_collection/records/record_" + str(idx) + ".wav"
+    log_path = "Data_collection/Logs/label_" + str(idx) + ".csv"
     tello = MinimalSubscriber(rec_path, log_path)
     try:
         while True:
             continue
     finally:
         print("stopped.")
-        print("Difference:",tello.recorder.record_start_time - tello.recorder.writedown_start_time)
         exit()
 
 if __name__ == '__main__':
