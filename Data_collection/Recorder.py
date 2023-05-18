@@ -27,8 +27,7 @@ class Recorder():
                         channels=self.channels,
                         rate=self.fs,
                         frames_per_buffer=self.chunk,
-                        input=True,
-                        input_device_index=1)
+                        input=True)
 
         frames = []  # Initialize array to store frames
         print('Started recording...')

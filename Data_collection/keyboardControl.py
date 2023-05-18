@@ -1,4 +1,4 @@
-from djitellopy import tello
+# from djitellopy import tello
 from threading import Thread
 import cv2
 import queue
