@@ -10,7 +10,7 @@ class Recorder():
         self.sample_format = pyaudio.paInt16  # 16 bits per sample
         self.channels = 1
         self.fs = 16000  # Record at 16000 samples per second
-        self.seconds = 360
+        self.seconds = 5
         self.state = None
         self.record_start_time = None
         self.writedown_start_time = None

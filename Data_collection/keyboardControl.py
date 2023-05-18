@@ -11,21 +11,21 @@ class MinimalSubscriber:
 
     def __init__(self, record_path:str, log_path:str):
 
-         # connect to the Drone
-        self.me = tello.Tello()
-        self.me.connect()
+        #  # connect to the Drone
+        # self.me = tello.Tello()
+        # self.me.connect()
 
         # recorder & logger
-        self.log = Logger(log_path, self.me)
+        self.log = Logger(log_path, None)
         self.recorder = Recorder(record_path, self.log)
         self.record_started = False
 
-        self.img = None
-        # self.cap: cv2.VideoCapture = self.me.get_video_capture()
-        self.q = queue.Queue()
+        # self.img = None
+        # # self.cap: cv2.VideoCapture = self.me.get_video_capture()
+        # self.q = queue.Queue()
 
         # prints the Battery percentage
-        print("Battery percentage:", self.me.get_battery())
+        # print("Battery percentage:", self.me.get_battery())
 
         # self.stream_thread = Thread(target=self.stream)   
         self.log_thread = Thread(target=self.log.update)
@@ -39,8 +39,8 @@ class MinimalSubscriber:
         self.listener.start()
 
         # if the battery is too low its arise an error
-        if self.me.get_battery() < 10:
-            raise RuntimeError("Tello rejected attemp to takeoff due to low Battery")
+        # if self.me.get_battery() < 10:
+        #     raise RuntimeError("Tello rejected attemp to takeoff due to low Battery")
 
 
     def on_press(self, key):
@@ -68,46 +68,46 @@ class MinimalSubscriber:
 
         try:
             # Takeoff
-            if key == Key.space and not self.tookoff:
-                self.tookoff = True
-                self.me.takeoff()
-            # Land
-            elif key == Key.space and self.tookoff:
-                self.tookoff = False
-                self.me.land()
-            # Up / Down
-            elif key == Key.up:
-                c = 0.5 * medium_factor
+            # if key == Key.space and not self.tookoff:
+            #     self.tookoff = True
+            #     self.me.takeoff()
+            # # Land
+            # elif key == Key.space and self.tookoff:
+            #     self.tookoff = False
+            #     self.me.land()
+            # # Up / Down
+            # elif key == Key.up:
+            #     c = 0.5 * medium_factor
                 
-            elif key == Key.down:
-                c = -0.5 * medium_factor
+            # elif key == Key.down:
+            #     c = -0.5 * medium_factor
                 
-            # YAW
-            elif key == Key.left:
-                d = -0.5 * big_factor
+            # # YAW
+            # elif key == Key.left:
+            #     d = -0.5 * big_factor
                 
-            elif key == Key.right:
-                d = 0.5 * big_factor
+            # elif key == Key.right:
+            #     d = 0.5 * big_factor
             
-            # Forward / Backward
-            elif key == KeyCode.from_char('w'):
-                b = 0.5 * big_factor
+            # # Forward / Backward
+            # elif key == KeyCode.from_char('w'):
+            #     b = 0.5 * big_factor
                 
-            elif key == KeyCode.from_char('s'):
-                b = -0.5 * big_factor
+            # elif key == KeyCode.from_char('s'):
+            #     b = -0.5 * big_factor
                 
-            # Left / Right
-            elif key == KeyCode.from_char('a'):
-                a = -0.5 * big_factor
+            # # Left / Right
+            # elif key == KeyCode.from_char('a'):
+            #     a = -0.5 * big_factor
                 
-            elif key == KeyCode.from_char('d'):
-                a = 0.5 * big_factor
+            # elif key == KeyCode.from_char('d'):
+            #     a = 0.5 * big_factor
                 
-            # Battery
-            elif key == KeyCode.from_char('b'):
-                print("Battery percentage:", self.me.get_battery())
+            # # Battery
+            # elif key == KeyCode.from_char('b'):
+            #     print("Battery percentage:", self.me.get_battery())
             # Record
-            elif key == KeyCode.from_char('r') and not self.record_started:
+            if key == KeyCode.from_char('r') and not self.record_started:
                 if self.record_started:
                     print("Already recording...")
                     pass
@@ -116,16 +116,16 @@ class MinimalSubscriber:
                 self.record_thread.start()
                 self.log_thread.start()
             # Emergency
-            elif key == KeyCode.from_char('e'):
-                try:
-                    print("EMERGENCY")
-                    self.me.emergency()
-                except Exception as e:
-                    print("Did not receive OK, reconnecting to Tello")
-                    self.me.connect()
+            # elif key == KeyCode.from_char('e'):
+            #     try:
+            #         print("EMERGENCY")
+            #         self.me.emergency()
+            #     except Exception as e:
+            #         print("Did not receive OK, reconnecting to Tello")
+            #         self.me.connect()
 
-            elif key == KeyCode.from_char('m'):
-                self.log.save_log()
+            # elif key == KeyCode.from_char('m'):
+            #     self.log.save_log()
 
             elif key.char == '0':
             # Normal state
@@ -145,7 +145,7 @@ class MinimalSubscriber:
                 print("3")
             
             # send the commands to the drone
-            self.me.send_rc_control(int(a), int(b), int(c), int(d))
+            # self.me.send_rc_control(int(a), int(b), int(c), int(d))
 
         except AttributeError:
             print("irrelevant key")
@@ -153,7 +153,7 @@ class MinimalSubscriber:
 
     def on_release(self,key):
         self.recorder.state = None 
-        self.me.send_rc_control(0, 0, 0, 0)
+        # self.me.send_rc_control(0, 0, 0, 0)
         
 
 
@@ -178,7 +178,7 @@ class MinimalSubscriber:
 
 
 def main():
-    idx = 0
+    idx = 2
     rec_path = "Data_collection/records/record_" + str(idx) + ".wav"
     log_path = "Data_collection/Logs/label_" + str(idx) + ".csv"
     tello = MinimalSubscriber(rec_path, log_path)
