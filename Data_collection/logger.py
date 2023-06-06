@@ -80,7 +80,7 @@ class Logger:
             This thread update the log file every 0.5 seconds.
         """
         while True:
-            time.sleep(0.5)
+            time.sleep(0.1)
             # state = self.tello.get_current_state()
             state = None
             self.add(state)

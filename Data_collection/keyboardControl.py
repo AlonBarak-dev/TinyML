@@ -178,7 +178,7 @@ class MinimalSubscriber:
 
 
 def main():
-    idx = 2
+    idx = 37
     rec_path = "Data_collection/records/record_" + str(idx) + ".wav"
     log_path = "Data_collection/Logs/label_" + str(idx) + ".csv"
     tello = MinimalSubscriber(rec_path, log_path)
