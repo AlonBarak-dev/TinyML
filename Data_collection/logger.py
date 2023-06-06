@@ -10,7 +10,8 @@ class Logger:
         
         self.filename = filename
         self.tello = tello
-        self.df = pd.DataFrame(columns=['time', 'label', 'baro', 'pitch', 'roll', 'Yaw', 'height', 'Vx', 'Vy', 'Vz', 'battery'])
+        # self.df = pd.DataFrame(columns=['time', 'label', 'baro', 'pitch', 'roll', 'Yaw', 'height', 'Vx', 'Vy', 'Vz', 'battery'])
+        self.df = pd.DataFrame(columns=['time', 'label'])
         self.command = "0"
         # self.thread_update = Thread(target=self.update).start()
         self.roll = 0
@@ -28,15 +29,16 @@ class Logger:
 
         # Extract the desired parameters from the state dict
         curr_time = time.time() - self.start_time
-        roll = data['roll']
-        pitch = data['pitch']
-        yaw = data['yaw']
-        height = data['h']
-        vx = data['vgx']
-        vy = data['vgy']
-        vz = data['vgz']
-        battery = data['bat']
-        baro = data['baro']
+        if data:
+            roll = data['roll']
+            pitch = data['pitch']
+            yaw = data['yaw']
+            height = data['h']
+            vx = data['vgx']
+            vy = data['vgy']
+            vz = data['vgz']
+            battery = data['bat']
+            baro = data['baro']
 
         # if self.command == "0" and \
         #     abs(self.yaw - yaw) > 20:
@@ -53,12 +55,14 @@ class Logger:
         #         print("ROLL HIT!!", abs(self.roll - roll))
         #         self.command = "1"
         
-        self.roll = roll      
-        self.yaw = yaw
+        # self.roll = roll      
+        # self.yaw = yaw
 
         # create a row from the above values
-        row = [curr_time, self.command, baro, pitch, roll, yaw, height, vx, vy, vz, battery]
-
+        if data:
+            row = [curr_time, self.command, baro, pitch, roll, yaw, height, vx, vy, vz, battery]    
+        else:
+            row = [curr_time, self.command]
         # save the currnet state in the log 
         self.df.loc[len(self.df)] = row
         # restart the command to: STAND
@@ -76,8 +80,9 @@ class Logger:
             This thread update the log file every 0.5 seconds.
         """
         while True:
-            time.sleep(0.5)
-            state = self.tello.get_current_state()
+            time.sleep(0.1)
+            # state = self.tello.get_current_state()
+            state = None
             self.add(state)
     
 
